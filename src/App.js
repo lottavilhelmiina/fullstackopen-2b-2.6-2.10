@@ -1,10 +1,45 @@
-import "./styles.css";
+import { useState } from "react";
 
-export default function App() {
+const Name = ({ persons, index }) => {
+  return <p>{persons[index].name}</p>;
+};
+
+const App = () => {
+  const [persons, setPersons] = useState([{ name: "Arto Hellas", id: 0 }]);
+  const [newName, setNewName] = useState("");
+
+  const addName = (event) => {
+    event.preventDefault();
+    const nameObject = {
+      name: newName,
+      id: persons.length + 1
+    };
+    setPersons(persons.concat(nameObject));
+    setNewName("");
+  };
+
+  const handleNameChange = (event) => {
+    console.log(event.target.value);
+    setNewName(event.target.value);
+  };
+
   return (
-    <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
+    <div>
+      <h2>Phonebook</h2>
+      <form onSubmit={addName}>
+        <div>
+          name: <input value={newName} onChange={handleNameChange} />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+      <h2>Numbers</h2>
+      {persons.map((name, index) => (
+        <Name key={persons.id} persons={persons} index={index} />
+      ))}
     </div>
   );
-}
+};
+
+export default App;
