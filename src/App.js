@@ -36,10 +36,14 @@ const Form = ({
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040 345 6789", id: 0 }
+    { name: "Arto Hellas", number: "040-123456" },
+    { name: "Ada Lovelace", number: "39-44-5323523" },
+    { name: "Dan Abramov", number: "12-43-234345" },
+    { name: "Mary Poppendieck", number: "39-23-6423122" }
   ]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [filter, setFilter] = useState("");
 
   const addObject = (event) => {
     event.preventDefault();
@@ -69,12 +73,43 @@ const App = () => {
     setNewNumber(event.target.value);
   };
 
+  const handleFilterChange = (event) => {
+    console.log(event.target.value);
+    setFilter(event.target.value);
+  };
+
   function userExists(newName) {
     return window.alert(`${newName} is already added to phonebook`);
   }
 
+  function filterPersonsList(filter) {
+    console.log(filter);
+    if (filter === "") {
+      persons.map((name, index) => (
+        <Name key={persons.id} persons={persons} index={index} />
+      ));
+    } else {
+      persons
+        .filter((person) => person.name.includes(filter))
+        .map((filteredPerson) => (
+          <p>
+            {filteredPerson.name}
+            {filteredPerson.number}
+            {console.log(filteredPerson.name)}
+          </p>
+        ));
+    }
+    console.log(filter);
+  }
+
   return (
     <div>
+      <form onSubmit={addObject}>
+        <div>
+          Filter names containing:{" "}
+          <input value={filter} onChange={handleFilterChange} />
+        </div>
+      </form>
       <h2>Phonebook</h2>
       <form onSubmit={addObject}>
         <div>
