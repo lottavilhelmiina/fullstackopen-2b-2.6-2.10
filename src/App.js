@@ -14,14 +14,24 @@ const App = () => {
       name: newName,
       id: persons.length + 1
     };
-    setPersons(persons.concat(nameObject));
-    setNewName("");
+
+    const found = persons.some((el) => el.name === newName);
+    if (found === true) {
+      userExists(newName);
+    } else {
+      setPersons(persons.concat(nameObject));
+      setNewName("");
+    }
   };
 
   const handleNameChange = (event) => {
     console.log(event.target.value);
     setNewName(event.target.value);
   };
+
+  function userExists(newName) {
+    return window.alert(`${newName} is already added to phonebook`);
+  }
 
   return (
     <div>
