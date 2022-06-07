@@ -10,7 +10,7 @@ const Name = ({ persons, index }) => {
 };
 // Miten tän sais toimimaan? Nyt se ei toimi, jos lisää renderöitäväks,
 // refreshaa vaan apin.
-const Form = ({
+/*const Form = ({
   addObject,
   newName,
   handleNameChange,
@@ -33,6 +33,7 @@ const Form = ({
     </React.Fragment>
   );
 };
+*/
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -78,51 +79,58 @@ const App = () => {
     setFilter(event.target.value);
   };
 
-  function userExists(newName) {
+  const userExists = (newName) => {
     return window.alert(`${newName} is already added to phonebook`);
-  }
+  };
 
-  function filterPersonsList(filter) {
-    console.log(filter);
-    if (filter === "") {
-      persons.map((name, index) => (
-        <Name key={persons.id} persons={persons} index={index} />
+  const showAllListItems = () => {
+    return persons.map((index) => (
+      <Name key={persons.id} persons={persons} index={index} />
+    ));
+  };
+
+  const filterList = (filter) => {
+    persons
+      .filter((person) => person.name.includes(filter))
+      .map((filteredPerson) => (
+        <p>
+          Name: {filteredPerson.name} <br /> Number: {filteredPerson.number}
+          <br /> {console.log(filteredPerson.name)}
+        </p>
       ));
-    } else {
-      persons
-        .filter((person) => person.name.includes(filter))
-        .map((filteredPerson) => (
-          <p>
-            {filteredPerson.name}
-            {filteredPerson.number}
-            {console.log(filteredPerson.name)}
-          </p>
-        ));
+  };
+
+  const filterIsEmpty = (filter) => {
+    if (filter === "") {
+      return true;
     }
-    console.log(filter);
-  }
+  };
 
   return (
     <div>
+      <h2>Phonebook</h2>
       <form onSubmit={addObject}>
         <div>
           Filter names containing:{" "}
           <input value={filter} onChange={handleFilterChange} />
         </div>
       </form>
-      <h2>Phonebook</h2>
+
+      <h3>Add new item</h3>
+
       <form onSubmit={addObject}>
         <div>
-          name: <input value={newName} onChange={handleNameChange} />
+          Name: <input value={newName} onChange={handleNameChange} />
         </div>
         <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
+          Number: <input value={newNumber} onChange={handleNumberChange} />
         </div>
         <div>
-          <button type="submit">add</button>
+          <button type="submit">Add</button>
         </div>
       </form>
-      <h2>Numbers</h2>
+
+      <h3>Numbers</h3>
       {persons.map((name, index) => (
         <Name key={persons.id} persons={persons} index={index} />
       ))}
@@ -131,6 +139,7 @@ const App = () => {
 };
 
 export default App;
+
 // Tässä vielä se, miten viittasin propseihin returnissa:
 /*
 <Form addobject={addObject} 
@@ -139,3 +148,11 @@ export default App;
       handleNameChange={handleNameChange}
       handleNumberChange={handleNumberChange}/>
       */
+
+/* ei toimi:
+{filterIsEmpty === true ? (
+  showAllListItems
+) : (
+filterList
+)}
+*/
