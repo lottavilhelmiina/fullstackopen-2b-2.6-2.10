@@ -8,32 +8,23 @@ const Name = ({ persons, index }) => {
     </p>
   );
 };
-// Miten tän sais toimimaan? Nyt se ei toimi, jos lisää renderöitäväks,
-// refreshaa vaan apin.
-/*const Form = ({
-  addObject,
-  newName,
-  handleNameChange,
-  newNumber,
-  handleNumberChange
-}) => {
-  return (
-    <React.Fragment>
-      <form onSubmit={addObject}>
-        <div>
-          Name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          Number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">Add</button>
-        </div>
-      </form>
-    </React.Fragment>
-  );
+
+const AllListItems = ({ persons }) => {
+  return persons.map((name, index) => (
+    <Name key={persons.id} persons={persons} index={index} />
+  ));
 };
-*/
+
+const FilterList = ({ filter, persons }) => {
+  return persons
+    .filter((person) => person.name.includes(filter))
+    .map((filteredPerson) => (
+      <p>
+        Name: {filteredPerson.name} <br /> Number: {filteredPerson.number}
+        <br /> {console.log(filteredPerson.name)}
+      </p>
+    ));
+};
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -83,29 +74,6 @@ const App = () => {
     return window.alert(`${newName} is already added to phonebook`);
   };
 
-  const showAllListItems = () => {
-    return persons.map((index) => (
-      <Name key={persons.id} persons={persons} index={index} />
-    ));
-  };
-
-  const filterList = (filter) => {
-    persons
-      .filter((person) => person.name.includes(filter))
-      .map((filteredPerson) => (
-        <p>
-          Name: {filteredPerson.name} <br /> Number: {filteredPerson.number}
-          <br /> {console.log(filteredPerson.name)}
-        </p>
-      ));
-  };
-
-  const filterIsEmpty = (filter) => {
-    if (filter === "") {
-      return true;
-    }
-  };
-
   return (
     <div>
       <h2>Phonebook</h2>
@@ -131,9 +99,11 @@ const App = () => {
       </form>
 
       <h3>Numbers</h3>
-      {persons.map((name, index) => (
-        <Name key={persons.id} persons={persons} index={index} />
-      ))}
+      {filter === "" ? (
+        <AllListItems key={persons.id} persons={persons} />
+      ) : (
+        <FilterList persons={persons} filter={filter} />
+      )}
     </div>
   );
 };
