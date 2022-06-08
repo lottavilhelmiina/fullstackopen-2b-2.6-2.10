@@ -17,7 +17,9 @@ const AllListItems = ({ persons }) => {
 
 const FilterList = ({ filter, persons }) => {
   return persons
-    .filter((person) => person.name.includes(filter))
+    .filter((person) =>
+      person.name.toLowerCase().includes(filter.toLowerCase())
+    )
     .map((filteredPerson) => (
       <p>
         Name: {filteredPerson.name} <br /> Number: {filteredPerson.number}
@@ -109,20 +111,3 @@ const App = () => {
 };
 
 export default App;
-
-// Tässä vielä se, miten viittasin propseihin returnissa:
-/*
-<Form addobject={addObject} 
-      newName={newName} 
-      newNumber={newNumber}
-      handleNameChange={handleNameChange}
-      handleNumberChange={handleNumberChange}/>
-      */
-
-/* ei toimi:
-{filterIsEmpty === true ? (
-  showAllListItems
-) : (
-filterList
-)}
-*/
