@@ -15,17 +15,24 @@ const AllListItems = ({ persons }) => {
   ));
 };
 
+// Miten rivillä 25 olevan ehtolausekkeen sais toimimaan?
+// yritin logata filteredPerson listaa kun matcheja ei löydy, eikä
+// silloin tulostu yhtään mitään, ei edes "", muulloin tulostuu taulukon sisältö
 const FilterList = ({ filter, persons }) => {
   return persons
     .filter((person) =>
       person.name.toLowerCase().includes(filter.toLowerCase())
     )
-    .map((filteredPerson) => (
-      <p>
-        Name: {filteredPerson.name} <br /> Number: {filteredPerson.number}
-        <br /> {console.log(filteredPerson.name)}
-      </p>
-    ));
+    .map((filteredPerson) =>
+      filteredPerson === undefined ? (
+        <p>No matches found.</p>
+      ) : (
+        <p>
+          Name: {filteredPerson.name} <br /> Number: {filteredPerson.number}
+          <br />
+        </p>
+      )
+    );
 };
 
 const App = () => {
@@ -46,7 +53,6 @@ const App = () => {
       number: newNumber,
       id: persons.length + 1
     };
-
     const found = persons.some((el) => el.name === newName);
     if (found === true) {
       userExists(newName);
@@ -55,6 +61,9 @@ const App = () => {
       setNewName("");
       setNewNumber("");
     }
+  };
+  const found = (filteredPerson) => {
+    filteredPerson.some((el) => el.name === newName);
   };
 
   const handleNameChange = (event) => {
