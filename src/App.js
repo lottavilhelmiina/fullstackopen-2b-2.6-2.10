@@ -16,24 +16,22 @@ const AllListItems = ({ persons }) => {
   ));
 };
 
-// Miten rivillä 25 olevan ehtolausekkeen sais toimimaan?
-// yritin logata filteredPerson listaa kun matcheja ei löydy, eikä
-// silloin tulostu yhtään mitään, ei edes "", muulloin tulostuu taulukon sisältö
 const FilterList = ({ filter, persons }) => {
-  return persons
+  const result = persons
     .filter((person) =>
       person.name.toLowerCase().includes(filter.toLowerCase())
     )
-    .map((filteredPerson) =>
-      filteredPerson === undefined ? (
-        <p>No matches found.</p>
-      ) : (
-        <p>
-          Name: {filteredPerson.name} <br /> Number: {filteredPerson.number}
-          <br />
-        </p>
-      )
-    );
+  if (result.length < 1) {
+    return <p>No matches found.</p>;
+  }
+
+  return result.map((filteredPerson) => (
+    <p>
+      Name: {filteredPerson.name} <br /> Number: {filteredPerson.number}
+      <br />
+    </p>
+  )
+  );
 };
 
 const App = () => {
@@ -44,16 +42,16 @@ const App = () => {
 
   useEffect(() => {
     console.log('effect')
-  
+
     const eventHandler = response => {
       console.log('promise fulfilled')
       setPersons(response.data)
     }
-  
+
     const promise = axios.get('http://localhost:3001/persons')
     promise.then(eventHandler)
   }, [])
-  
+
   console.log('render', persons.length, 'persons')
   const addObject = (event) => {
     event.preventDefault();
