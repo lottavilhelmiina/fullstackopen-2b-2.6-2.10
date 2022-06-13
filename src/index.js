@@ -1,13 +1,14 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import axios from 'axios'
 
 import App from "./App";
 
-const rootElement = document.getElementById("root");
-const root = createRoot(rootElement);
+axios
+  .get('http://localhost:3001/notes')
+  .then(response => {
+    const notes = response.data
+    console.log(notes)
+  })
 
-root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+ ReactDOM.createRoot(document.getElementById('root')).render(<App />)
