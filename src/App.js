@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios'
 
+import personService from './services/persons'
+
 const Name = ({ persons, index }) => {
   return (
-    <p>
-      Name: {persons[index].name} <br /> Number: {persons[index].number}
-      <br />
-    </p>
+      <p>
+        Name: {persons[index].name} <br /> Number: {persons[index].number}
+      </p>
   );
 };
 
-const AllListItems = ({ persons }) => {
+const AllListItems = ({ persons, handleDeleteButtonClick }) => {
   return persons.map((name, index) => (
-    <Name key={persons.id} persons={persons} index={index} />
-  ));
+    <div key={index}>
+    <Name persons={persons} index={index} />
+    <button onClick={() => removeUser(res.id)}>
+    Delete
+  </button>
+  </div>
+    ));
 };
 
 const FilterList = ({ filter, persons }) => {
@@ -41,15 +47,11 @@ const App = () => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    console.log('effect')
-
-    const eventHandler = response => {
-      console.log('promise fulfilled')
-      setPersons(response.data)
-    }
-
-    const promise = axios.get('http://localhost:3001/persons')
-    promise.then(eventHandler)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
   }, [])
 
   console.log('render', persons.length, 'persons')
@@ -58,20 +60,21 @@ const App = () => {
     const nameObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1
     };
+
 
     const found = persons.some((el) => el.name === newName);
     if (found === true) {
-      userExists(newName);
+      userExists(persons, id, newName, newNumber);
     } else {
-      setPersons(persons.concat(nameObject));
-      setNewName("");
-      setNewNumber("");
+      personService
+        .create(nameObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
     }
-  };
-  const found = (filteredPerson) => {
-    filteredPerson.some((el) => el.name === newName);
   };
 
   const handleNameChange = (event) => {
@@ -89,8 +92,29 @@ const App = () => {
     setFilter(event.target.value);
   };
 
-  const userExists = (newName) => {
-    return window.alert(`${newName} is already added to phonebook`);
+  const handleDeleteButtonClick = (id) => {
+    if (window.confirm("Do you want to delete item?")) {
+      
+      personService.deleteObject(id)
+      setPersons(
+        persons.filter((person) => {
+          return person.id !== id;
+        })
+      )
+    }
+  }
+
+  const userExists = (persons, id, newName, newNumber) => {
+    if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+    const person = persons.find(p => p.id === id)
+    const changedPerson = { ...person, number: newNumber }
+
+    personService
+      .update(id, changedPerson)
+      .then(returnedPerson => {
+        setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+      })
+        }
   };
 
   return (
@@ -119,9 +143,14 @@ const App = () => {
 
       <h3>Numbers</h3>
       {filter === "" ? (
-        <AllListItems key={persons.id} persons={persons} />
+        <AllListItems 
+        persons={persons} 
+        handleDeleteButtonClick={handleDeleteButtonClick}
+        />
       ) : (
-        <FilterList persons={persons} filter={filter} />
+        <FilterList 
+        persons={persons} 
+        filter={filter} />
       )}
     </div>
   );
