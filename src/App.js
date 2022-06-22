@@ -5,21 +5,21 @@ import personService from './services/persons'
 
 const Name = ({ persons, index }) => {
   return (
-      <p>
-        Name: {persons[index].name} <br /> Number: {persons[index].number}
-      </p>
+    <p>
+      Name: {persons[index].name} <br /> Number: {persons[index].number}
+    </p>
   );
 };
 
 const AllListItems = ({ persons, handleDeleteButtonClick }) => {
   return persons.map((name, index) => (
     <div key={index}>
-    <Name persons={persons} index={index} />
-    <button onClick={() => removeUser(res.id)}>
-    Delete
-  </button>
-  </div>
-    ));
+      <Name persons={persons} index={index} />
+      <button onClick={() => removeUser(res.id)}>
+        Delete
+      </button>
+    </div>
+  ));
 };
 
 const FilterList = ({ filter, persons }) => {
@@ -32,10 +32,14 @@ const FilterList = ({ filter, persons }) => {
   }
 
   return result.map((filteredPerson) => (
-    <p>
-      Name: {filteredPerson.name} <br /> Number: {filteredPerson.number}
-      <br />
-    </p>
+    <div>
+      <p>
+        Name: {filteredPerson.name} <br /> Number: {filteredPerson.number}
+      </p>
+      <button onClick={() => removeUser(res.id)}>
+        Delete
+      </button>
+    </div>
   )
   );
 };
@@ -94,7 +98,7 @@ const App = () => {
 
   const handleDeleteButtonClick = (id) => {
     if (window.confirm("Do you want to delete item?")) {
-      
+
       personService.deleteObject(id)
       setPersons(
         persons.filter((person) => {
@@ -106,15 +110,15 @@ const App = () => {
 
   const userExists = (persons, id, newName, newNumber) => {
     if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
-    const person = persons.find(p => p.id === id)
-    const changedPerson = { ...person, number: newNumber }
+      const person = persons.find(p => p.id === id)
+      const changedPerson = { ...person, number: newNumber }
 
-    personService
-      .update(id, changedPerson)
-      .then(returnedPerson => {
-        setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
-      })
-        }
+      personService
+        .update(id, changedPerson)
+        .then(returnedPerson => {
+          setPersons(persons.map(person => person.id !== id ? person : returnedPerson))
+        })
+    }
   };
 
   return (
@@ -143,14 +147,14 @@ const App = () => {
 
       <h3>Numbers</h3>
       {filter === "" ? (
-        <AllListItems 
-        persons={persons} 
-        handleDeleteButtonClick={handleDeleteButtonClick}
+        <AllListItems
+          persons={persons}
+          handleDeleteButtonClick={handleDeleteButtonClick}
         />
       ) : (
-        <FilterList 
-        persons={persons} 
-        filter={filter} />
+        <FilterList
+          persons={persons}
+          filter={filter} />
       )}
     </div>
   );
